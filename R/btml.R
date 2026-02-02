@@ -1,6 +1,6 @@
 btml=function(y,x,z,ynew=NULL, xnew=NULL,znew=NULL,
              MLlist=c("lasso","rf","svm"),
-             sparse=TRUE, nwarm=1000, niter=1000,
+             sparse=TRUE, nwarm=5000, niter=5000,
              minsample=20, base = 0.95, power = 0.8){
 
   ###
@@ -29,7 +29,7 @@ btml=function(y,x,z,ynew=NULL, xnew=NULL,znew=NULL,
   #1.3. Split data into train and validation
   n=length(y)
 
-  n1=floor(0.7* n) #80% tr / 20% val
+  n1=floor(0.7* n) #70% tr / 30% val
   n2=n-n1
   train_ind <- sample(1:n, size = n1)
   y1=y[train_ind]  #traning
@@ -40,7 +40,6 @@ btml=function(y,x,z,ynew=NULL, xnew=NULL,znew=NULL,
   x2=x[-train_ind,]
   z2=z[-train_ind,]
 
-  posterior.improved="no" #warm-up or posterior improved
   ###################################################
   ## A. Warm Up
   ###################################################
@@ -70,7 +69,6 @@ btml=function(y,x,z,ynew=NULL, xnew=NULL,znew=NULL,
       ET1=compLTP(ET1,base,power, btml_predict)   #compute LTP
       ET=MH(ET1,ET,base,power)
       #if(ET$MH=="accepted"){
-        posterior.improved="yes"
         #Store the marker and predictor information
         m.predictor=append(m.predictor, ET$splitVariable[ET$internal])
         m.algorithm=append(m.algorithm, ET$algorithm[ET$terminal])
@@ -96,6 +94,7 @@ btml=function(y,x,z,ynew=NULL, xnew=NULL,znew=NULL,
   ###################################################
   #B1. initial value for evaluation
   ET2=ET
+  posterior.improved="no"
 
   #B2. update tree
   for(iter in 1:niter){

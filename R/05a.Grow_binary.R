@@ -7,12 +7,15 @@ Grow_binary=function(ET,STN,minsample){
   q=ET$q
   y1=ET$y1
   x1=ET$x1
+  y2=ET$y2
+  x2=ET$x2
 
   splitVariable=ET$splitVariable
   cutoff=ET$cutoff
   algorithm=ET$algorithm
 
   node.hat1=ET$node.hat1
+  node.hat2=ET$node.hat2
   algorithm.hat1=ET$algorithm.hat1
 
   internal=ET$internal
@@ -26,25 +29,34 @@ Grow_binary=function(ET,STN,minsample){
   #2.1. select feature
   splitVariable[STN]=sample(1:q,1,prob = ET$dir.predictor)
 
-  idx=(node.hat1==STN)                            # idx, i.e. those who belong to terminal node=STN
-  x1.sel=unique(x1[which(idx),splitVariable[STN]]) # selected x for those who belong to terminal node=STN
+  idx1=(node.hat1==STN)                            # idx, i.e. those who belong to terminal node=STN
+  idx2=(node.hat2==STN)
+  x1.sel=unique(x1[which(idx1),splitVariable[STN]]) # selected x for those who belong to terminal node=STN
+  x2.sel=unique(x2[which(idx2),splitVariable[STN]])
   cutoff[STN]=sample(x1.sel,1)
   eta1[STN]=length(x1.sel)                         # the number of available values which could be select to split the chosen terminal node
 
   #2.2. Split STN into left & right
-  left=which(idx & x1[,splitVariable[STN]]<=cutoff[STN])
-  right=which(idx & x1[,splitVariable[STN]]>cutoff[STN])
+  left1=which(idx1 & x1[,splitVariable[STN]]<=cutoff[STN])
+  left2=which(idx2 & x2[,splitVariable[STN]]<=cutoff[STN])
+  right1=which(idx1 & x1[,splitVariable[STN]]>cutoff[STN])
+  right2=which(idx2 & x2[,splitVariable[STN]]>cutoff[STN])
 
   LC.STN=2*STN   #left child node number for STN
   RC.STN=2*STN+1 #right child node number
 
-  node.hat1[left]=LC.STN
-  node.hat1[right]=RC.STN
+  node.hat1[left1]=LC.STN
+  node.hat2[left2]=LC.STN
+  node.hat1[right1]=RC.STN
+  node.hat2[right2]=RC.STN
 
   cond1=min(table(y1,node.hat1))>minsample         # subgroup sample size is large enough
-  cond2=length(left)>minsample
-  cond3=length(right)>minsample
-  size.cond=cond1&cond2&cond3
+  cond2=length(left1)>minsample
+  cond3=length(right1)>minsample
+  cond4=min(table(y2,node.hat2))>=2      
+  cond5=length(left2)>=2
+  cond6=length(right2)>=2
+  size.cond=cond1&cond2&cond3&cond4&cond5&cond6
 
   if(size.cond){
     #2.3. select algorithms
@@ -54,8 +66,8 @@ Grow_binary=function(ET,STN,minsample){
     algorithm[LC.STN]=sel.algorithm.L
     algorithm[RC.STN]=sel.algorithm.R
 
-    algorithm.hat1[left]=algorithm[LC.STN]       # selected algorithm for each subj
-    algorithm.hat1[right]=algorithm[RC.STN]
+    algorithm.hat1[left1]=algorithm[LC.STN]       # selected algorithm for each subj
+    algorithm.hat1[right1]=algorithm[RC.STN]
 
     #2.4. updated internal & terminal nodes
     internal=sort(c(internal,STN))               # NA is removed by sort, if internal is NA

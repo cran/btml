@@ -1,9 +1,8 @@
 Package: btml
 Type: Package
-Title: Bayesian Treed Machine Learning for Personalized Prediction and
-        Precision Diagnostics
-Version: 0.1.0
-Date: 2025-05-12
+Title: Bayesian Treed Machine Learning for Personalized Prediction
+Version: 0.2.0
+Date: 2026-02-01
 Authors@R: 
   c(person(given = "Yunro",
            family = "Chung",
@@ -19,9 +18,9 @@ License: GPL (>= 2)
 Depends: R (>= 4.5.0), glmnet, randomForest, e1071, pROC, stats,
         graphics
 NeedsCompilation: no
-Packaged: 2025-05-14 13:12:25 UTC; ychung36
+Packaged: 2026-02-02 06:05:15 UTC; ychung36
 Author: Yunro Chung [aut, cre] (ORCID: <https://orcid.org/0000-0001-9125-9277>),
   Yaliang Zhang [aut]
 Maintainer: Yunro Chung <yunro.chung@asu.edu>
 Repository: CRAN
-Date/Publication: 2025-05-19 08:50:02 UTC
+Date/Publication: 2026-02-02 06:20:02 UTC
