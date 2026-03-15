@@ -49,7 +49,7 @@ btml=function(y,x,z,ynew=NULL, xnew=NULL,znew=NULL,
   ET$dir.algorithm=rep(1/ET$p,ET$p)
   #ET$dir.marker=rep(1/ET$r,ET$r) #not used
 
-  ET=compLTP(ET,base,power, btml_predict)                                       # Compute log-likelihood, tree probability and log-posterior
+  ET0=ET=compLTP(ET,base,power, btml_predict)                                       # Compute log-likelihood, tree probability and log-posterior
 
   #A2. Warm up tree
   m.predictor=NA #selected predictors
@@ -118,7 +118,8 @@ btml=function(y,x,z,ynew=NULL, xnew=NULL,znew=NULL,
   }
 
   if(posterior.improved=="no"){
-    warning("Increase nwarm and/or niter\n")
+    ET=ET0
+    #warning("Consider to increase nwarm and/or niter\n")
   }else{
     ET=ET2 #choose the one with the highest posterior
 
